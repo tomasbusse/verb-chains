@@ -13,7 +13,20 @@ export interface PaletteItem {
   text: string;
   category?: BlockCategory;
   isLabel?: boolean;
+  isCustom?: boolean;
 }
+
+// Category order for display
+export const CATEGORY_ORDER: BlockCategory[] = [
+  "subject",
+  "aux",
+  "modal",
+  "main",
+  "negation",
+  "object",
+  "time",
+  "connector",
+];
 
 export const PALETTE_BLOCKS: PaletteItem[] = [
   { id: "label-subjects", text: "Subjects", isLabel: true },
@@ -99,6 +112,40 @@ export const PALETTE_BLOCKS: PaletteItem[] = [
 // Helper to get only draggable blocks (not labels)
 export const getDraggableBlocks = () =>
   PALETTE_BLOCKS.filter((item) => !item.isLabel);
+
+// Get blocks organized by category
+export const getBlocksByCategory = (): Record<BlockCategory, PaletteItem[]> => {
+  const result: Record<BlockCategory, PaletteItem[]> = {
+    subject: [],
+    aux: [],
+    modal: [],
+    main: [],
+    negation: [],
+    object: [],
+    time: [],
+    connector: [],
+  };
+
+  for (const block of PALETTE_BLOCKS) {
+    if (!block.isLabel && block.category) {
+      result[block.category].push(block);
+    }
+  }
+
+  return result;
+};
+
+// Section labels that match the original design
+export const SECTION_LABELS: Record<BlockCategory, string> = {
+  subject: "Subjects",
+  aux: "Auxiliaries (finite verb 1)",
+  modal: "Modals",
+  main: "Verbs / Chunks",
+  negation: "Negation",
+  object: "Objects",
+  time: "Time / Adverbials",
+  connector: "Connectors",
+};
 
 // Category colors for styling
 export const CATEGORY_COLORS: Record<BlockCategory, string> = {
