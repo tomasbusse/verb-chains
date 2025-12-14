@@ -78,19 +78,28 @@ export function Palette({ isLocked = false }: PaletteProps) {
   useEffect(() => {
     if (!paletteRef.current) return;
 
-    const sortable = Sortable.create(paletteRef.current, {
-      group: {
-        name: "blocks",
-        pull: isLocked ? false : "clone",
-        put: false,
-      },
-      sort: false,
-      animation: 150,
-      filter: ".group-label, .add-btn",
+    // Create sortable for each category section
+    const sortables: Sortable[] = [];
+    const sections = paletteRef.current.querySelectorAll(".category-section");
+
+    sections.forEach((section) => {
+      const sortable = Sortable.create(section as HTMLElement, {
+        group: {
+          name: "blocks",
+          pull: isLocked ? false : "clone",
+          put: false,
+        },
+        sort: false,
+        animation: 150,
+        draggable: ".block",
+        filter: ".group-label, .add-btn, .remove-custom-btn",
+        preventOnFilter: false,
+      });
+      sortables.push(sortable);
     });
 
     return () => {
-      sortable.destroy();
+      sortables.forEach((s) => s.destroy());
     };
   }, [isLocked, customBlocks]);
 
